@@ -141,7 +141,7 @@ td.n input{min-width:86px}
 </div>
 
 <div id="inv"></div>
-<div class="ver noprint">الإصدار 1.9.1</div>
+<div class="ver noprint">الإصدار 1.9.2</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -292,11 +292,11 @@ async function readImg(){
   var pr='دي '+(tl.length>1?'صور متتالية من أعلى لأسفل لنفس الفاتورة، وكل جزء بيتداخل شوية مع اللي قبله، فلا تكرر صنف ظاهر في منطقة التداخل. ':'صورة فاتورة. ')+'استخرج كل الأصناف بالترتيب. اقرأ أسماء الأصناف والعميل زي ما هي مكتوبة بالظبط. رجّع JSON فقط بالشكل: {"customer":"","number":"","manager":"","items":[{"n":"اسم الصنف","p":سعر الوحدة,"q":الكمية}]}. number هو رقم المبيعات. الأرقام بالإنجليزي (أرقام فقط). لا تخترع أصناف، ولو كلمة مش واضحة اكتب أقرب قراءة.';
   var parts=[{text:pr}];
   for(var i=0;i<tl.length;i++)parts.push({inline_data:{mime_type:"image/jpeg",data:await b64(tl[i])}});
-  var chain=[model,"gemini-2.5-flash","gemini-2.5-flash-lite"].filter(function(m,i,a){return a.indexOf(m)===i}),d=null,last=null;
+  var chain=[model,"gemini-3.6-flash","gemini-3-flash-preview","gemini-3.1-flash-lite","gemini-2.5-flash"].filter(function(m,i,a){return a.indexOf(m)===i}),d=null,last=null;
   for(var mi=0;mi<chain.length&&!d;mi++){
    for(var at=0;at<2&&!d;at++){
     try{d=await gem(parts,key,chain[mi])}
-    catch(e){last=e;var c0=e&&e.code;
+    catch(e){var c0=e&&e.code;if(!(c0==="http_404"&&last&&last.code!=="http_404"))last=e;
      if(c0==="http_503"||c0==="http_500"||(e&&e.name==="TypeError")){st.textContent="Gemini مشغول، بجرّب تاني...";await new Promise(function(r){setTimeout(r,2500)});continue}
      if(c0==="http_404")break;
      throw e}
